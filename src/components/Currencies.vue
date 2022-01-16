@@ -55,7 +55,7 @@ export default {
   methods: {
         update: function(){
             axios
-            .get(`http://localhost:3001/updaterates`)
+            .get(`http://uz-currency-converter-backend.herokuapp.com/updaterates`)
             .then((response) => {
               console.log(response.data);
               this.currencies = response.data;
