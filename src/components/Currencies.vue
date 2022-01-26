@@ -1,20 +1,20 @@
 <template>
  <div class="container fluid bg-secondary text-white bg-opacity-75">
-    <div class="row my-5"> <h3>Currency Exchange Rate Checker App</h3></div>
+    <div class="row my-5"> <h3>Valyuta Kursini Aniqlash Web Dasturi</h3></div>
     <div class="row mb-3"> 
       <div class="col-sm-2 m-1 p-1">
         <input v-model="userInputAmount" placeholder="Summani kiriting...">  
       </div>
       <div class="col-sm-2 m-1 p-1">
-        <input v-model="userInput" placeholder="Valyuta kodini yoki davlat nomini kiriting...">  
+        <input v-model="userInput" class="text-center" placeholder="Valyuta kodini yoki davlat nomini kiriting...">  
       </div>
-      <div class="col-sm-1 align-self-center"> 
+      <div class="col-sm-2 align-self-center"> 
 
         =>
 
       </div>
-      <div class="col-sm-2 m-1 p-1">
-        <input v-model="userInput2" placeholder="Valyuta kodini yoki davlat nomini kiriting...">  
+      <div class="col-sm-2 m-1 p-1" >
+        <input v-model="userInput2" class="text-center" placeholder="Valyuta kodini yoki davlat nomini kiriting...">  
       </div>
       <div class="col-sm-3 m-1 p-1">
         <input v-model="userInputValue" placeholder="Natija"> 
@@ -42,7 +42,9 @@ export default {
   data() {
     return {
       userInput:"USD",
+      isUserInputBaseCCY:false,
       userInput2: "UZS",
+      isUserInput2BaseCCY:true,
       userInputAmount: 1,
       userInputValueTemp:0,
       userInputValue: "",
@@ -66,7 +68,12 @@ export default {
     },
     userInput2:function(ccy){
       this.displayResults(this.userInput, ccy);
-    }
+    },
+    userInputAmount: function(newAmount){
+      this.userInputAmount = newAmount;
+      this.displayResults(this.userInput, this.userInput2);
+    },
+    
   },
   mounted(){
     this.update();
@@ -77,13 +84,23 @@ export default {
           if(ccy != undefined && ccy2 != undefined){
           console.log(ccy + ' ===> ' + ccy2);
           let notFound = true;
+          // if(ccy.toLowerCase() == "UZS" || "O`zbekiston So`mi".toLowerCase().startsWith(ccy.toLowerCase())){
+          //   for(let i=0; i < this.currencies[])
+          // }
+          console.log(this.userInputAmount);
             for(let i=0; i < this.currencies.length; i++){
               if(ccy.toLowerCase() == this.currencies[i].currencyCode.toLowerCase() || this.currencies[i].nameUz.toLowerCase().startsWith(ccy.toLowerCase())){
                 for(let j=0; j < this.currencies.length; j++){
                   if(ccy2.toLowerCase() == this.currencies[j].currencyCode.toLowerCase() || this.currencies[j].nameUz.toLowerCase().startsWith(ccy2.toLowerCase())){
+                    console.log('this.userInputAmount: ' + this.userInputAmount);
+                    console.log('this.currencies[i].rate: ' + this.currencies[i].rate);
+                    console.log('this.userInputValueTemp: ' + this.userInputValueTemp);
                     this.userInputValueTemp = this.userInputAmount * this.currencies[i].rate;
-                    this.userInputValue = Number(this.userInputValueTemp / (this.userInputAmount * this.currencies[j].rate)).toLocaleString() + " " + this.currencies[j].nameUz;
+                    this.userInputValue = Number(this.userInputValueTemp / this.currencies[j].rate).toLocaleString() + " " + this.currencies[j].nameUz;
                     this.userInputValueDetailed =  (Number(this.currencies[i].nominal * this.userInputAmount).toLocaleString() + " " +  this.currencies[i].nameUz + " (" +this.currencies[i].currencyCode+ ") " + " = " + this.userInputValue);
+                    
+                    console.log('userInputValue: ' + this.userInputValue);
+                    console.log('userInputValue: ' + this.userInputValueTemp + ' / ' + this.currencies[j].rate + ' * ' + this.userInputAmount + ' ' )
                     //  + " (" + (this.currencies[i].diff > 0 ? ( "+" + this.currencies[i].diff) : this.currencies[i].diff) + ")"
                     notFound = false;
                     break;
